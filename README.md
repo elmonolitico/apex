@@ -1,10 +1,10 @@
-# Papelerias Data Analysis Project
+# Papeleria Data Analysis Project
 
-This repository contains the code and resources for the Papelerias Data Analysis Project. The project aims to demonstrate the capabilities of data analysis and showcase potential value-add using the dataset provided by Papelerias.
+This repository contains the code and resources for the Papeleria's Data Analysis Project. The project aims to demonstrate the capabilities of data analysis and showcase potential value-add using the dataset provided by Papeleria.
 
 ## Introduction
 
-The primary objective of this project is to identify opportunities for cost reduction within Papelerias by analyzing the dataset. We will focus on understanding cost drivers, identifying inefficiencies, and recommending strategies to optimize costs. Additionally, we will explore operational efficiency by reviewing delivery times and measure the impact of different factors on fulfillment.
+The primary objective of this project is to identify opportunities for cost reduction within Papeleria by analyzing the dataset. We will focus on understanding cost drivers, identifying inefficiencies, and recommending strategies to optimize costs. Additionally, we will explore operational efficiency by reviewing delivery times and measure the impact of different factors on fulfillment.
 
 ## Components of the Project
 
@@ -32,7 +32,8 @@ We utilize Atlas MongoDB to store the dataset, which offers the following advant
 To run the code and reproduce the analysis locally, follow these steps:
 
 1. Clone the repository:
-    git clone https://github.com/your-username/papelerias-project.git
+    git clone https://github.com/elmonolitico/apex.git
+
 2. Install the required dependencies:
     pip install -r requirements.txt
 
