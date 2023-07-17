@@ -1,58 +1,33 @@
 import pandas as pd
-import requests
-import json
-import time
-from prep_functions import calculate_processing_time, categorize_processing_time, calculate_profit_margin, calculate_unit_price_sale, calculate_unit_profit, calculate_unit_cost, calculate_cost
 
-API_TOKEN = ""
-API_URL = ""
+def calculate_processing_time(df):
+    df['ORDER_DATE'] = pd.to_datetime(df['ORDER_DATE'])
+    df['SHIP_DATE'] = pd.to_datetime(df['SHIP_DATE'])
+    df['PROCESSING_TIME'] = (df['SHIP_DATE'] - df['ORDER_DATE']).dt.days
+    df['ORDER_DATE'] = df['ORDER_DATE'].dt.strftime('%Y-%m-%d %H:%M:%S')
+    df['SHIP_DATE'] = df['SHIP_DATE'].dt.strftime('%Y-%m-%d %H:%M:%S')
+    return df
 
-def upload_data_to_api(df):
-    api_token = API_TOKEN
-    url = API_URL
+def categorize_processing_time(df):
+    df['PROCESSING_TIME_CATEGORY'] = pd.cut(df['PROCESSING_TIME'], bins=[-1, 3, 7, 14, float('inf')], labels=['Fast', 'Moderate', 'Slow', 'Very Slow'])
+    return df
 
-    payload = json.dumps({
-        "collection": "PAPELERIA",
-        "database": "APEX",
-        "dataSource": "Cluster0",
-        "documents": df.to_dict(orient='records')
-    })
-    headers = {
-        'Content-Type': 'application/json',
-        'Access-Control-Request-Headers': '*',
-        'api-key': api_token
-    }
+def calculate_profit_margin(df):
+    df['PROFIT_MARGIN'] = (df['PROFIT'] / df['SALES']) * 100
+    return df
 
-    try:
-        response = requests.post(url, headers=headers, data=payload)
-        response_data = response.json()
-        if response.ok:
-            print("Data uploaded successfully")
-        else:
-            print(f"Data upload failed: {response_data['message']}")
-    except Exception as e:
-        print(f"Data upload failed: {str(e)}")
+def calculate_unit_price_sale(df):
+    df['UNIT_PRICE_SALE'] = df['SALES'] / df['QUANTITY']
+    return df
 
-def process_and_upload_data(df):
-    df = calculate_processing_time(df)
-    df = categorize_processing_time(df)
-    df = calculate_profit_margin(df)
-    df = calculate_unit_price_sale(df)
-    df = calculate_unit_profit(df)
-    df = calculate_unit_cost(df)
-    df = calculate_cost(df)
+def calculate_unit_profit(df):
+    df['UNIT_PROFIT'] = df['PROFIT'] / df['QUANTITY']
+    return df
 
-    chunk = 50
-    start = 0
-    for a in range(chunk, len(df), chunk):
-        print(start)
-        print(a)
-        upload_data_to_api(df[start:a])
-        start = a + 1
-        time.sleep(1)  # Sleep for 1 second between uploads
+def calculate_unit_cost(df):
+    df['UNIT_COST'] = (df['SALES'] - df['PROFIT']) / df['QUANTITY']
+    return df
 
-# Read the dataset from the CSV file
-df = pd.read_csv('EXPORT_PAPELERIA.csv')
-
-# Process and upload the data
-process_and_upload_data(df)
+def calculate_cost(df):
+    df['COST'] = df['SALES'] - df['PROFIT']
+    return df
